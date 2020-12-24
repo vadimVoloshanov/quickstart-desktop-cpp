@@ -74,30 +74,30 @@ void BanubaSdkManager::process_image(const path& path)
         .wait();
 }
 
-bnb::data_t BanubaSdkManager::sync_process_frame(std::shared_ptr<bnb::full_image_t> image)
-{
-    bool ready = false;
-    const auto& format = image.get()->get_format();
-    m_render_thread->schedule([this, image, &ready, &format]() {
-        if (last_frame_size.first != format.width || last_frame_size.second != format.height) {
-            m_render_thread->update_surface_size(format.width, format.height);
-            last_frame_size.first = format.width;
-            last_frame_size.second = format.height;
-        }
-        m_effect_player->push_frame(std::move(*image));
-        auto read_pixels_callback = [&ready]() {
-            ready = true;
-        };
-        m_render_thread->add_read_pixels_callback(read_pixels_callback);
-    });
+// bnb::data_t BanubaSdkManager::sync_process_frame(std::shared_ptr<bnb::full_image_t> image)
+// {
+//     bool ready = false;
+//     const auto& format = image.get()->get_format();
+//     m_render_thread->schedule([this, image, &ready, &format]() {
+//         if (last_frame_size.first != format.width || last_frame_size.second != format.height) {
+//             m_render_thread->update_surface_size(format.width, format.height);
+//             last_frame_size.first = format.width;
+//             last_frame_size.second = format.height;
+//         }
+//         m_effect_player->push_frame(std::move(*image));
+//         auto read_pixels_callback = [&ready]() {
+//             ready = true;
+//         };
+//         m_render_thread->add_read_pixels_callback(read_pixels_callback);
+//     });
 
-    while (!ready)
-    {
-        std::this_thread::sleep_for(1us);
-    }
+//     while (!ready)
+//     {
+//         std::this_thread::sleep_for(1us);
+//     }
 
-    return m_effect_player->read_pixels(format.width, format.height);
-}
+//     return m_effect_player->read_pixels(format.width, format.height);
+// }
 
 void BanubaSdkManager::async_process_frame(std::shared_ptr<bnb::full_image_t> image, std::function<void(bnb::data_t data)> callback)
 {

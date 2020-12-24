@@ -39,7 +39,7 @@ public:
     void load_effect(const std::string& effectPath, bool synchronous);
 
     void process_image(const path& path);
-    bnb::data_t sync_process_frame(std::shared_ptr<bnb::full_image_t> image);
+    // bnb::data_t sync_process_frame(std::shared_ptr<bnb::full_image_t> image);
     void async_process_frame(std::shared_ptr<bnb::full_image_t> image, std::function<void(bnb::data_t data)> callback);
 
     void process_camera(int camera_id = 0);
