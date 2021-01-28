@@ -55,8 +55,6 @@ void RenderThread::surface_changed(int32_t width, int32_t height)
 
 void RenderThread::update_data(bnb::data_t data)
 {
-    bnb::image_format image_f((uint32_t)m_cur_width, (uint32_t)m_cur_height, bnb::camera_orientation::deg_0, false, 0, std::nullopt);
-
     libyuv::ABGRToNV12(data.data.get(),
                m_cur_width * 4,
                m_cur_y_plane.get(),
@@ -65,6 +63,12 @@ void RenderThread::update_data(bnb::data_t data)
                m_cur_width,
                m_cur_width,
                m_cur_height);
+}
+
+void RenderThread::update_data(bnb::NV12_planes data)
+{
+    m_cur_y_plane = data.y;
+    m_cur_uv_plane = data.uv;
 }
 
 void RenderThread::update_context()

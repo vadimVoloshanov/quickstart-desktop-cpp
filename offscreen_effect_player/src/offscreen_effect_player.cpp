@@ -1,49 +1,72 @@
 #include "../include/offscreen_effect_player.hpp"
 
+#include <libyuv.h>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <iostream>
+
 namespace bnb
 {
-    offscreen_effect_player::offscreen_effect_player(const std::string& client_token,
-                                    int32_t width, int32_t height, bool manual_audio)
+    offscreen_effect_player::offscreen_effect_player(const std::vector<std::string>& path_to_resources,
+            const std::string& client_token, int32_t width, int32_t height, bool manual_audio,
+            std::shared_ptr<interfaces::offscreen_render_target> offscreen_render_target)
+        : m_utility(path_to_resources, client_token)
+        , m_effect_player(bnb::interfaces::effect_player::create( {
+            width, height,
+            bnb::interfaces::nn_mode::automatically,
+            bnb::interfaces::face_search_mode::good,
+            false, manual_audio }))
+        , m_offscreen_render_target(offscreen_render_target)
+        , m_render_thread([this]() { while (!m_cancellation_flag) { m_scheduler.run_all_tasks(); } })
+        , m_cancellation_flag(false) {}
+
+    offscreen_effect_player::~offscreen_effect_player()
     {
-        _manager = std::make_unique<BanubaSdkManager>(client_token, width, height, manual_audio);
+        m_cancellation_flag = true;
     }
 
-    void offscreen_effect_player::async_process_image(std::shared_ptr<bnb::full_image_t> image, std::function<void(bnb::data_t data)> callback)
+    std::shared_ptr<interfaces::pixel_buffer> offscreen_effect_player::process_image(std::shared_ptr<full_image_t> image)
     {
-        _manager->async_process_frame(image, callback);
+        auto task = [this, image]() {
+            m_offscreen_render_target->prepare_rendering();
+            m_effect_player->push_frame(std::move(*image));
+            m_effect_player->draw();
+        };
+
+        async::spawn(m_scheduler, task);
+
+        // return
     }
 
-    void offscreen_effect_player::load_effect(const std::string& effect_name, bool synchronous)
+    void offscreen_effect_player::load_effect(const std::string& effect_path)
     {
-        _manager->load_effect(effect_name, synchronous);
+        m_effect_player->effect_manager()->load(effect_path);
     }
 
-    void offscreen_effect_player::unload_effect(bool synchronous)
+    void offscreen_effect_player::unload_effect()
     {
-        _manager->unload_effect(synchronous);
+        load_effect("");
     }
 
     void offscreen_effect_player::pause()
     {
-        _manager->pause();
+        m_effect_player->playback_pause();
     }
 
     void offscreen_effect_player::resume()
     {
-        _manager->resume();
+        m_effect_player->playback_play();
     }
 
     void offscreen_effect_player::enable_audio(bool enable)
     {
-        _manager->enable_audio(enable);
+        m_effect_player->enable_audio(enable);
     }
 
     void offscreen_effect_player::call_js_method(const std::string& method, const std::string& param)
     {
-        _manager->call_js_method(method, param);
+        m_effect_player->effect_manager()->current()->call_js_method(method, param);
     }
 
 } // bnb
