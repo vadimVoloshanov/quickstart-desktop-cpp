@@ -4,10 +4,10 @@
 
 namespace bnb::interfaces
 {
-    class pixel_buffer
+    class Pixel_buffer
     {
     public:
-        virtual ~pixel_buffer() = default;
+        virtual ~Pixel_buffer() = default;
 
         virtual uint32_t get_texture_id() = 0;
 

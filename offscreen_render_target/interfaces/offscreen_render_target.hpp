@@ -4,10 +4,10 @@
 
 namespace bnb::interfaces
 {
-    class offscreen_render_target
+    class Offscreen_render_target
     {
     public:
-        virtual ~offscreen_render_target() = default;
+        virtual ~Offscreen_render_target() = default;
 
         virtual void prepare_rendering() = 0;
 

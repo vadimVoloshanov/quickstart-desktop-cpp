@@ -1,23 +1,16 @@
 #include "offscreen_effect_player/include/offscreen_effect_player.hpp"
 
-#include "offscreen_render_target/interfaces/offscreen_render_target.hpp"
-
 #include <bnb/spal/camera/ocv_based.hpp>
 
 #define BNB_CLIENT_TOKEN "WMHjeKZfQ8WJ0Z/zN2TAiTRKfEC8pkAjGbiOTzWJ+EKEs13Mtx58NWTUF6yDH+lup69EPkz0PqE="
-
-template<typename F>
-auto schedule(const F& f, async::fifo_scheduler scheduler)
-{
-    return async::spawn(scheduler, f);
-}
 
 int main()
 {
     int32_t width = 1280;
     int32_t height = 720;
 
-    auto oep = offscreen_effect_player::create(BNB_CLIENT_TOKEN, width, height, false);
+    auto oep = bnb::Offscreen_effect_player::create({ BNB_RESOURCES_FOLDER }, BNB_CLIENT_TOKEN,
+                                               width, height, false);
     oep->load_effect("effects/virtual_bg");
 
     // std::shared_ptr<GlfwWindow> window = std::make_shared<GlfwWindow>("");
