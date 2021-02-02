@@ -20,8 +20,5 @@ namespace bnb::interfaces
 
         virtual uint32_t get_active_texture_id() = 0;
         virtual bnb::data_t read_current_buffer() = 0;
-
-        //???
-        virtual void show_on_active_texture() = 0;
     };
 } // bnb::interfaces

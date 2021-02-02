@@ -49,7 +49,10 @@ namespace bnb
             return async::spawn(m_scheduler, f);
         }
 
-        friend class pixel_buffer;
+        friend class Pixel_buffer;
+
+        void get_active_texture_id(std::function<void(uint32_t texture_id)> callback);
+        void read_current_buffer(std::function<void(bnb::data_t data)> callback);
 
     private:
         bnb::utility m_utility;
@@ -60,5 +63,7 @@ namespace bnb
 
         std::thread m_render_thread;
         async::fifo_scheduler m_scheduler;
+
+        std::shared_ptr<interfaces::Pixel_buffer> current_frame;
     };
 } // bnb
