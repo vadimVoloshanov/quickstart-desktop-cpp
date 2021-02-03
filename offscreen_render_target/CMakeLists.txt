@@ -1,6 +1,5 @@
 set(include_dirs
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/
 )
 
 file(GLOB_RECURSE srcs
@@ -17,5 +16,7 @@ target_include_directories(offscreen_rt SYSTEM PUBLIC ${LIBYUV_INCLUDE_DIRS})
 
 target_link_libraries(offscreen_rt
     bnb_effect_player
+    glad
+    glfw
     yuv
 )

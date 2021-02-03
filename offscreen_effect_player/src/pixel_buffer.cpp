@@ -6,22 +6,22 @@
 
 namespace bnb
 {
-    Pixel_buffer::Pixel_buffer(std::shared_ptr<Offscreen_effect_player> oep_ptr, uint32_t width, uint32_t height)
+    pixel_buffer::pixel_buffer(std::shared_ptr<offscreen_effect_player> oep_ptr, uint32_t width, uint32_t height)
         : m_oep_ptr(oep_ptr)
         , m_width(width)
         , m_height(height) {}
 
-    bool Pixel_buffer::get_ready() const
+    bool pixel_buffer::get_ready() const
     {
         return m_ready;
     }
 
-    void Pixel_buffer::set_ready()
+    void pixel_buffer::set_ready()
     {
         m_ready = true;
     }
 
-    void Pixel_buffer::get_texture_id(std::function<void(uint32_t texture_id)> callback)
+    void pixel_buffer::get_texture_id(std::function<void(uint32_t texture_id)> callback)
     {
         if (auto oep_sp = m_oep_ptr.lock()) {
             oep_sp->get_active_texture_id(callback);
@@ -30,7 +30,7 @@ namespace bnb
         throw std::runtime_error("Offscreen effect player destroyed");
     }
 
-    void Pixel_buffer::get_RGBA(std::function<void(full_image_t image)> callback)
+    void pixel_buffer::get_RGBA(std::function<void(full_image_t image)> callback)
     {
         if (auto oep_sp = m_oep_ptr.lock()) {
             auto convert_callback = [this, callback](data_t data) {
@@ -45,7 +45,7 @@ namespace bnb
         throw std::runtime_error("Offscreen effect player destroyed");
     }
 
-    void Pixel_buffer::get_NV12(std::function<void(full_image_t image)> callback)
+    void pixel_buffer::get_NV12(std::function<void(full_image_t image)> callback)
     {
         if (auto oep_sp = m_oep_ptr.lock()) {
             auto convert_callback = [this, callback](data_t data) {

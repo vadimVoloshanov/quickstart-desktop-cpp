@@ -4,70 +4,59 @@
 
 namespace bnb
 {
-    void Offscreen_render_target::init(uint32_t width, uint32_t height)
+    void offscreen_render_target::init(uint32_t width, uint32_t height)
     {
+        std::cout << "ORT init" << std:: endl;
+
         m_width = width;
         m_height = height;
 
+        std::cout << "ORT activate_context" << std:: endl;
         activate_context();
-        set_surface_size(width, height);
-
-        // m_program = std::make_unique<bnb::program>("OrientationChange", vs_default_base, ps_default_base);
-        // m_frame_surface_handler = std::make_unique<oep_frame_surface_handler>(bnb::camera_orientation::deg_0, false);
+        std::cout << "ORT gen and bind frame bufer" << std:: endl;
 
         // glGenFramebuffers(1, &m_framebuffer);
-        // glGenFramebuffers(1, &m_postProcessingFramebuffer);
-
         // glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-
-        // setupTextureCache();
-
-        // setupOffscreenPixelBuffer();
-
-        // setupOffscreenRenderTarget();
+        std::cout << "ORT init finish" << std:: endl;
     }
 
-    void Offscreen_render_target::prepare_rendering()
+    void offscreen_render_target::prepare_rendering()
     {
-        // glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, CVOpenGLESTextureGetTarget(m_offscreenRenderTexture), CVOpenGLESTextureGetName(m_offscreenRenderTexture), 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 
-        // if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        //     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        //     NSLog(@"Failed to make complete framebuffer object %d", status);
-        // }
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,  m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     }
 
-    void Offscreen_render_target::activate_context()
+    //create_context
+    void offscreen_render_target::activate_context()
     {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        renderer_context.reset();
+        renderer_context = std::shared_ptr<GLFWwindow>(glfwCreateWindow(m_width, m_height, "", nullptr, nullptr));
+
         glfwMakeContextCurrent(renderer_context.get());
-
-        //need?
-        glfwSwapInterval(1);
-
-        //add logic
     }
 
-    void Offscreen_render_target::set_surface_size(uint32_t width, uint32_t height)
+    //activate context
+
+    uint32_t offscreen_render_target::get_active_texture_id()
     {
-        m_width = width;
-        m_height = height;
-        GL_CALL(glViewport(0, 0, width, height));
+        return texture;
     }
 
-    uint32_t Offscreen_render_target::get_active_texture_id()
+    data_t offscreen_render_target::read_current_buffer()
     {
-        return 0;
-    }
+        size_t size = m_width * m_height * 4;
+        data_t data = data_t{ std::make_unique<uint8_t[]>(size), size };
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.data.get());
 
-    data_t Offscreen_render_target::read_current_buffer()
-    {
-        return data_t();
-    }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDeleteFramebuffers(1, &m_framebuffer);
 
-    //???
-    void Offscreen_render_target::show_on_active_texture()
-    {
-        glfwSwapBuffers(renderer_context.get());
+        return data;
     }
 } // bnb

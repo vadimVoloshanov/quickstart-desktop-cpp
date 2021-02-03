@@ -6,12 +6,12 @@
 
 namespace bnb::interfaces
 {
-    class Offscreen_effect_player
+    class offscreen_effect_player
     {
     public:
-        virtual ~Offscreen_effect_player() = default;
+        virtual ~offscreen_effect_player() = default;
 
-        virtual std::shared_ptr<interfaces::Pixel_buffer> process_image(std::shared_ptr<full_image_t> image) = 0;
+        virtual std::shared_ptr<interfaces::pixel_buffer> process_image(std::shared_ptr<full_image_t> image) = 0;
 
         virtual void load_effect(const std::string& effect_path) = 0;
         virtual void unload_effect() = 0;
