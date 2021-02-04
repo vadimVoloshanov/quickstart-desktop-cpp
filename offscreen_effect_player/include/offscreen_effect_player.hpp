@@ -13,10 +13,10 @@
 namespace bnb
 {
     class offscreen_effect_player: public interfaces::offscreen_effect_player,
-                                          std::enable_shared_from_this<offscreen_effect_player>
+                                   public std::enable_shared_from_this<offscreen_effect_player>
     {
     public:
-        static std::unique_ptr<interfaces::offscreen_effect_player> create(
+        static std::shared_ptr<interfaces::offscreen_effect_player> create(
             const std::vector<std::string>& path_to_resources, const std::string& client_token,
             int32_t width, int32_t height, bool manual_audio,
             std::shared_ptr<interfaces::offscreen_render_target> ort = nullptr);

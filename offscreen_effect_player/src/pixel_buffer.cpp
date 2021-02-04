@@ -49,26 +49,27 @@ namespace bnb
     {
         if (auto oep_sp = m_oep_ptr.lock()) {
             auto convert_callback = [this, callback](data_t data) {
-                bnb::color_plane y_plane = nullptr;
-                bnb::color_plane uv_plane = nullptr;
+                std::vector<uint8_t> y_plane(m_width * m_height * 4);
+                std::vector<uint8_t> uv_plane(m_width * m_height * 2);
 
                 bnb::image_format frm(m_width, m_height, bnb::camera_orientation::deg_0, false, 0, std::nullopt);
 
                 libyuv::ABGRToNV12(data.data.get(),
                     m_width * 4,
-                    y_plane.get(),
+                    y_plane.data(),
                     m_width,
-                    uv_plane.get(),
+                    uv_plane.data(),
                     m_width,
                     m_width,
                     m_height);
 
-                callback(full_image_t(yuv_image_t(y_plane, uv_plane, frm)));
+                callback(full_image_t(yuv_image_t(color_plane_vector(y_plane), color_plane_vector(uv_plane), frm)));
             };
 
             oep_sp->read_current_buffer(convert_callback);
         }
-
-        throw std::runtime_error("Offscreen effect player destroyed");
+        else {
+            throw std::runtime_error("Offscreen effect player destroyed");
+        }
     }
 } // bnb

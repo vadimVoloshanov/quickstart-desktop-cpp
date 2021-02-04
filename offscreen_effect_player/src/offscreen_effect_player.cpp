@@ -2,20 +2,18 @@
 
 #include "../../offscreen_render_target/include/offscreen_render_target.hpp"
 
-#include <iostream>
-
 namespace bnb
 {
-    std::unique_ptr<interfaces::offscreen_effect_player> offscreen_effect_player::create(
+    std::shared_ptr<interfaces::offscreen_effect_player> offscreen_effect_player::create(
         const std::vector<std::string>& path_to_resources, const std::string& client_token,
         int32_t width, int32_t height, bool manual_audio,
         std::shared_ptr<interfaces::offscreen_render_target> ort)
     {
         if (ort == nullptr) {
-            ort = std::shared_ptr<offscreen_render_target>();
+            ort = std::make_shared<offscreen_render_target>(width, height);
         }
 
-        return std::unique_ptr<offscreen_effect_player>(new offscreen_effect_player(
+        return std::shared_ptr<offscreen_effect_player>(new offscreen_effect_player(
                 path_to_resources, client_token, width, height, manual_audio, ort));
     }
 
@@ -34,10 +32,8 @@ namespace bnb
             , m_cancellation_flag(false)
     {
         auto task = [this, width, height]() {
-            m_ort->init(width, height);
-            std::cout << "OEP call surface_creat" << std::endl;
+            m_ort->activate_context();
             m_ep->surface_created(1280, 720);
-            std::cout << "OEP call surface_created" << std::endl;
         };
 
         async::spawn(m_scheduler, task);
@@ -50,7 +46,6 @@ namespace bnb
 
     std::shared_ptr<interfaces::pixel_buffer> offscreen_effect_player::process_image(std::shared_ptr<full_image_t> image)
     {
-        std::cout << "process_image" << std::endl;
         if (current_frame.use_count() > 1) {
             //log
             // throw std::runtime_error("The interface for processing the previous frame is not destroyed");
@@ -63,6 +58,7 @@ namespace bnb
             m_ort->prepare_rendering();
             m_ep->push_frame(std::move(*image));
             m_ep->draw();
+            glFlush();
             current_frame->set_ready();
         };
 

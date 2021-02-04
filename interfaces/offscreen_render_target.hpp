@@ -9,9 +9,7 @@ namespace bnb::interfaces
     public:
         virtual ~offscreen_render_target() = default;
 
-        virtual void init(uint32_t width, uint32_t height) = 0;
-
-        virtual void activate_context();
+        virtual void activate_context() = 0;
 
         virtual void prepare_rendering() = 0;
 

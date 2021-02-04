@@ -13,9 +13,9 @@ namespace bnb
     class offscreen_render_target : public interfaces::offscreen_render_target
     {
     public:
-        offscreen_render_target() = default;
+        offscreen_render_target(uint32_t width, uint32_t height);
 
-        void init(uint32_t width, uint32_t height) override;
+        void activate_context() override;
 
         void prepare_rendering() override;
 
@@ -23,7 +23,8 @@ namespace bnb
         bnb::data_t read_current_buffer() override;
 
     private:
-        void activate_context();
+        void create_context();
+        void load_glad_functions();
 
         uint32_t m_width;
         uint32_t m_height;
