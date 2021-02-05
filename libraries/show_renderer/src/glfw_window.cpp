@@ -6,9 +6,6 @@
 
 #include <glad/glad.h>
 
-#include <map>
-#include <utility>
-
 using namespace bnb;
 
 glfw_window::glfw_window(const std::string& title)

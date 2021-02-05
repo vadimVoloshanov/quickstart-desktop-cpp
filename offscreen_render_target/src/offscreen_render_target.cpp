@@ -1,6 +1,6 @@
-#include "../include/offscreen_render_target.hpp"
+#include "offscreen_render_target.hpp"
 
-#include "../include/opengl.hpp"
+#include "opengl.hpp"
 
 #include <bnb/effect_player/utility.hpp>
 #include <bnb/postprocess/interfaces/postprocess_helper.hpp>

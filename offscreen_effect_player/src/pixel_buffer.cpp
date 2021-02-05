@@ -1,4 +1,4 @@
-#include "../include/pixel_buffer.hpp"
+#include "pixel_buffer.hpp"
 
 #include <bnb/types/full_image.hpp>
 

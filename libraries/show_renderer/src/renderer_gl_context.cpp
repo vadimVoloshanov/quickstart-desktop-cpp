@@ -1,4 +1,4 @@
-#include "../include/renderer_gl_context.hpp"
+#include "renderer_gl_context.hpp"
 
 using namespace bnb;
 

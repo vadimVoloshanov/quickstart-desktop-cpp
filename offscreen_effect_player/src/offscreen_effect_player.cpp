@@ -1,6 +1,5 @@
-#include "../include/offscreen_effect_player.hpp"
-
-#include "../../offscreen_render_target/include/offscreen_render_target.hpp"
+#include "offscreen_effect_player.hpp"
+#include "offscreen_render_target.hpp"
 
 namespace bnb
 {

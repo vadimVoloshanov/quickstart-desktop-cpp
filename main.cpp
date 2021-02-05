@@ -1,5 +1,5 @@
-#include "offscreen_effect_player/include/offscreen_effect_player.hpp"
-#include "offscreen_render_target/include/offscreen_render_target.hpp"
+#include "offscreen_effect_player.hpp"
+#include "offscreen_render_target.hpp"
 
 #include "glfw_window.hpp"
 #include "render_thread.hpp"
@@ -15,13 +15,11 @@ int main()
 
     std::shared_ptr<bnb::interfaces::offscreen_render_target> ort =
         std::make_shared<bnb::offscreen_render_target>(width, height);
-
     auto oep = bnb::offscreen_effect_player::create({ BNB_RESOURCES_FOLDER }, BNB_CLIENT_TOKEN,
                                                width, height, false, ort);
     oep->load_effect("effects/bg");
 
     std::atomic<bool> frame_used = false;
-
 
     //add coments. What only for show, only for us
     std::shared_ptr<glfw_window> window = std::make_shared<glfw_window>("");
