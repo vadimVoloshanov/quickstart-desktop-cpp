@@ -6,11 +6,11 @@
 #include <string>
 #include <async++.h>
 
-class GlfwWindow
+class glfw_window
 {
 public:
-    explicit GlfwWindow(const std::string& title);
-    ~GlfwWindow();
+    explicit glfw_window(const std::string& title);
+    ~glfw_window();
 
     void show(uint32_t width_hint, uint32_t height_hint);
     void run_main_loop();

@@ -1,4 +1,4 @@
-#include "GlfwWindow.hpp"
+#include "glfw_window.hpp"
 
 #include <bnb/effect_player/utility.hpp>
 #include <bnb/utils/defs.hpp>
@@ -11,7 +11,7 @@
 
 using namespace bnb;
 
-GlfwWindow::GlfwWindow(const std::string& title)
+glfw_window::glfw_window(const std::string& title)
 {
     init();
     try {
@@ -30,14 +30,14 @@ GlfwWindow::GlfwWindow(const std::string& title)
     }
 }
 
-GlfwWindow::~GlfwWindow()
+glfw_window::~glfw_window()
 {
     glfwMakeContextCurrent(nullptr);
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
 
-void GlfwWindow::show(uint32_t width_hint, uint32_t height_hint)
+void glfw_window::show(uint32_t width_hint, uint32_t height_hint)
 {
     async::spawn(
         m_scheduler,
@@ -50,7 +50,7 @@ void GlfwWindow::show(uint32_t width_hint, uint32_t height_hint)
     glfwPostEmptyEvent();
 }
 
-void GlfwWindow::run_main_loop()
+void glfw_window::run_main_loop()
 {
     while (!glfwWindowShouldClose(m_window)) {
         glfwWaitEvents();
@@ -58,14 +58,14 @@ void GlfwWindow::run_main_loop()
     }
 }
 
-void GlfwWindow::init()
+void glfw_window::init()
 {
     if (GLFW_TRUE != glfwInit()) {
         throw std::runtime_error("glfwInit error");
     }
 }
 
-void GlfwWindow::create_window(const std::string& title)
+void glfw_window::create_window(const std::string& title)
 {
     //
     // Choose OpenGL context
@@ -108,7 +108,7 @@ void GlfwWindow::create_window(const std::string& title)
     }
 }
 
-void GlfwWindow::load_glad_functions()
+void glfw_window::load_glad_functions()
 {
 #if BNB_OS_WINDOWS || BNB_OS_MACOS
     // it's only need for use while working with dynamic libs

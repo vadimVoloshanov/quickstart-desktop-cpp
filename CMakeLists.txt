@@ -33,6 +33,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/utils.cmake)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/bnb_sdk)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/third)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/libraries)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/offscreen_effect_player)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/offscreen_render_target)
 
@@ -42,9 +43,6 @@ option(DEPLOY_BUILD "Build for deployment" OFF)
 # Targets #
 ###########
 
-
-# add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/example)
-
 add_executable(example main.cpp)
 
 target_include_directories(example SYSTEM PUBLIC ${LIBYUV_INCLUDE_DIRS})
@@ -53,6 +51,7 @@ target_link_libraries(example
     glfw
     offscreen_ep
     opencv
+    show_renderer
     yuv
 )
 

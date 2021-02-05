@@ -9,8 +9,6 @@
 
 #include "renderer.hpp"
 
-#include "../../offscreen_effect_player/interfaces/offscreen_effect_player.hpp"
-
 namespace render {
 
 class RenderThread
@@ -22,8 +20,8 @@ public:
 
     void surface_changed(int32_t width, int32_t height);
 
+    void update_data(bnb::full_image_t image);
     void update_data(bnb::data_t data);
-    void update_data(bnb::NV12_planes data);
     void update_context();
 
     template<typename F>

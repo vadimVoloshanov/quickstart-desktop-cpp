@@ -1,22 +1,6 @@
 #include "render_thread.hpp"
 
-#include <chrono>
-#include <iostream>
 #include <libyuv.h>
-
-namespace {
-
-using namespace std::chrono;
-
-void get_time(const std::string& des)
-{
-    auto ms = duration_cast< milliseconds >(
-        system_clock::now().time_since_epoch()
-    ).count();
-    std::cout << des << ": " << ms << std::endl;
-}
-
-}
 
 namespace render {
 
@@ -27,11 +11,11 @@ RenderThread::RenderThread(GLFWwindow* window, int32_t width, int32_t height)
     , m_cur_width(width)
     , m_cur_height(height)
 {
-    m_y_row_ptr = (uint8_t*) malloc(m_cur_height * m_cur_width * 4 * sizeof(uint8_t));
-    m_uv_row_ptr = (uint8_t*) malloc(m_cur_height * m_cur_width * 2 * sizeof(uint8_t));
+    // m_y_row_ptr = (uint8_t*) malloc(m_cur_height * m_cur_width * 4 * sizeof(uint8_t));
+    // m_uv_row_ptr = (uint8_t*) malloc(m_cur_height * m_cur_width * 2 * sizeof(uint8_t));
 
-    m_cur_y_plane.reset(m_y_row_ptr);
-    m_cur_uv_plane.reset(m_uv_row_ptr);
+    // m_cur_y_plane.reset(m_y_row_ptr);
+    // m_cur_uv_plane.reset(m_uv_row_ptr);
 }
 
 RenderThread::~RenderThread()
@@ -53,6 +37,13 @@ void RenderThread::surface_changed(int32_t width, int32_t height)
     }
 }
 
+void RenderThread::update_data(bnb::full_image_t image)
+{
+    const auto& yuv = image.get_data<bnb::yuv_image_t>();
+    m_cur_y_plane = yuv.y_plane;
+    m_cur_uv_plane = yuv.uv_plane;
+}
+
 void RenderThread::update_data(bnb::data_t data)
 {
     libyuv::ABGRToNV12(data.data.get(),
@@ -63,12 +54,6 @@ void RenderThread::update_data(bnb::data_t data)
                m_cur_width,
                m_cur_width,
                m_cur_height);
-}
-
-void RenderThread::update_data(bnb::NV12_planes data)
-{
-    m_cur_y_plane = data.y;
-    m_cur_uv_plane = data.uv;
 }
 
 void RenderThread::update_context()
