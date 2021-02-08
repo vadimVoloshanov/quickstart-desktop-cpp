@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-project(quickstart-desktop-cpp)
+project(offscreen_effect_player-desktop-cpp)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

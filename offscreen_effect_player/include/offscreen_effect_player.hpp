@@ -30,7 +30,9 @@ namespace bnb
     public:
         ~offscreen_effect_player();
 
-        std::shared_ptr<interfaces::pixel_buffer> process_image(std::shared_ptr<full_image_t> image) override;
+        void process_image_async(std::shared_ptr<full_image_t> image,
+                std::function<void(std::shared_ptr<interfaces::pixel_buffer> callback)>) override;
+        // std::shared_ptr<interfaces::pixel_buffer> process_image_sync(std::shared_ptr<full_image_t> image) override;
 
         void load_effect(const std::string& effect_path) override;
         void unload_effect() override;

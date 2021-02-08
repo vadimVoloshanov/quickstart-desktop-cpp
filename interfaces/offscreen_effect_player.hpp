@@ -11,7 +11,9 @@ namespace bnb::interfaces
     public:
         virtual ~offscreen_effect_player() = default;
 
-        virtual std::shared_ptr<interfaces::pixel_buffer> process_image(std::shared_ptr<full_image_t> image) = 0;
+        virtual void process_image_async(std::shared_ptr<full_image_t> image,
+                std::function<void(std::shared_ptr<interfaces::pixel_buffer> callback)>) = 0;
+        // virtual std::shared_ptr<interfaces::pixel_buffer> process_image_sync(std::shared_ptr<full_image_t> image) = 0;
 
         virtual void load_effect(const std::string& effect_path) = 0;
         virtual void unload_effect() = 0;

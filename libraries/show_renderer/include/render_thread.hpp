@@ -11,12 +11,12 @@
 
 namespace render {
 
-class RenderThread
+class render_thread
 {
 public:
-    RenderThread(GLFWwindow* window, int32_t width, int32_t height);
+    render_thread(GLFWwindow* window, int32_t width, int32_t height);
 
-    ~RenderThread();
+    ~render_thread();
 
     void surface_changed(int32_t width, int32_t height);
 

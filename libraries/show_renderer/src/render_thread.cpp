@@ -4,7 +4,7 @@
 
 namespace render {
 
-RenderThread::RenderThread(GLFWwindow* window, int32_t width, int32_t height)
+render_thread::render_thread(GLFWwindow* window, int32_t width, int32_t height)
     : m_window(window)
     , m_thread([this]() { thread_func(); })
     , m_cancellation_flag(false)
@@ -18,7 +18,7 @@ RenderThread::RenderThread(GLFWwindow* window, int32_t width, int32_t height)
     // m_cur_uv_plane.reset(m_uv_row_ptr);
 }
 
-RenderThread::~RenderThread()
+render_thread::~render_thread()
 {
     delete m_y_row_ptr;
     delete m_uv_row_ptr;
@@ -27,7 +27,7 @@ RenderThread::~RenderThread()
     m_thread.join();
 }
 
-void RenderThread::surface_changed(int32_t width, int32_t height)
+void render_thread::surface_changed(int32_t width, int32_t height)
 {
     m_cur_width = width;
     m_cur_height = height;
@@ -37,14 +37,14 @@ void RenderThread::surface_changed(int32_t width, int32_t height)
     }
 }
 
-void RenderThread::update_data(bnb::full_image_t image)
+void render_thread::update_data(bnb::full_image_t image)
 {
     const auto& yuv = image.get_data<bnb::yuv_image_t>();
     m_cur_y_plane = yuv.y_plane;
     m_cur_uv_plane = yuv.uv_plane;
 }
 
-void RenderThread::update_data(bnb::data_t data)
+void render_thread::update_data(bnb::data_t data)
 {
     libyuv::ABGRToNV12(data.data.get(),
                m_cur_width * 4,
@@ -56,14 +56,14 @@ void RenderThread::update_data(bnb::data_t data)
                m_cur_height);
 }
 
-void RenderThread::update_context()
+void render_thread::update_context()
 {
     if (m_renderer) {
         m_renderer->update_camera_texture(m_cur_y_plane, m_cur_uv_plane);
     }
 }
 
-void RenderThread::thread_func()
+void render_thread::thread_func()
 {
     using namespace std::chrono_literals;
 

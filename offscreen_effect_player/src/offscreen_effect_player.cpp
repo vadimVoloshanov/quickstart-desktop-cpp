@@ -1,6 +1,8 @@
 #include "offscreen_effect_player.hpp"
 #include "offscreen_render_target.hpp"
 
+#include <iostream>
+
 namespace bnb
 {
     std::shared_ptr<interfaces::offscreen_effect_player> offscreen_effect_player::create(
@@ -43,27 +45,28 @@ namespace bnb
         m_cancellation_flag = true;
     }
 
-    std::shared_ptr<interfaces::pixel_buffer> offscreen_effect_player::process_image(std::shared_ptr<full_image_t> image)
+    void offscreen_effect_player::process_image_async(std::shared_ptr<full_image_t> image,
+                std::function<void(std::shared_ptr<interfaces::pixel_buffer>)> callback)
     {
-        if (current_frame.use_count() > 1) {
-            //log
-            // throw std::runtime_error("The interface for processing the previous frame is not destroyed");
+        if (current_frame == nullptr) {
+            current_frame = std::make_shared<pixel_buffer>(shared_from_this(),
+                image->get_format().width, image->get_format().height);
         }
-        current_frame.reset();
-        current_frame = std::make_shared<pixel_buffer>(shared_from_this(),
-                        image->get_format().width, image->get_format().height);
 
-        auto task = [this, image]() {
+        if (current_frame.use_count() > 1) {
+            std::cout << "The interface for processing the previous frame is not destroyed" << std::endl;
+            return;
+        }
+
+        auto task = [this, image, callback]() {
             m_ort->prepare_rendering();
             m_ep->push_frame(std::move(*image));
             m_ep->draw();
             glFlush();
-            current_frame->set_ready();
+            callback(current_frame);
         };
 
         async::spawn(m_scheduler, task);
-
-        return current_frame;
     }
 
     void offscreen_effect_player::load_effect(const std::string& effect_path)

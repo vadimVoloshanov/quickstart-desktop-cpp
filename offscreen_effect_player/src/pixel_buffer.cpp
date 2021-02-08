@@ -11,16 +11,6 @@ namespace bnb
         , m_width(width)
         , m_height(height) {}
 
-    bool pixel_buffer::get_ready() const
-    {
-        return m_ready;
-    }
-
-    void pixel_buffer::set_ready()
-    {
-        m_ready = true;
-    }
-
     void pixel_buffer::get_texture_id(std::function<void(uint32_t texture_id)> callback)
     {
         if (auto oep_sp = m_oep_ptr.lock()) {
